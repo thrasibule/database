@@ -19,7 +19,7 @@ def parse_values(fh):
     sent = True
     for line in fh:
         line = line.strip()
-        if not line:
+        if not line or line == ".":
             return d
         else:
             if sent or line[0] == "/":
