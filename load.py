@@ -1,15 +1,11 @@
-import MySQLdb
+import mysql.connector
 import sys
 from json import load
 from os.path import basename, splitext
 
-
 def execute_script(fn, cur):
-    query = " ".join(line.strip() for line in open(fn).readlines())
-    for q in query.split(";"):
-        if q:
-            cur.execute(q)
-
+    script = open(fn).read()
+    cur.execute(script, multi=True)
 
 def schema(fn):
     bn = basename(fn)
@@ -31,11 +27,12 @@ def main():
     db = config["db"]
 
     # Setup MySQL connection
-    conn = MySQLdb.connect(host='health-db-internet.c6clocfz5zxy.us-east-1.rds.amazonaws.com',
-                           port=3306,
-                           user=db_user,
-                           passwd=pw,
-                           db=db)
+    conn = (mysql.connector.
+            connect(host='health-db-internet.c6clocfz5zxy.us-east-1.rds.amazonaws.com',
+                port=3306,
+                    user=db_user,
+                    password=pw,
+                    database=db))
     cur = conn.cursor()
     execute_script(sys.argv[1], cur)
 
